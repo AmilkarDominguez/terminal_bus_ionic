@@ -4,6 +4,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { LoadingController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 
+import { TravelService } from '../services/travel.service';
 
 @Component({
   selector: 'app-home',
@@ -11,10 +12,21 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit {
+  
 
+  constructor(
+    private geolocation: Geolocation, 
+    public loadingController: LoadingController, 
+    public alertController: AlertController,
+    private dataService: TravelService,
+  ) {}
+
+ 
   ngOnInit() {
     this.getDate();
   }
+
+  code:string;
 
   myDate: String = new Date().toLocaleString();
   interval_;
@@ -32,9 +44,9 @@ export class HomePage implements OnInit {
       if (this.timeLeft > 0) {
         this.timeLeft--;
       } else {
-        //alert('aaa');
-        this.timeLeft = 10;
-        //Hacer algo
+        this.timeLeft = 60;
+        console.log(this.code);
+        this.Strat_Travel();
         this.getLoc();
       }
     }, 1000)
@@ -45,13 +57,11 @@ export class HomePage implements OnInit {
 
   lat: any = ''
   lng: any = ''
-  constructor(private geolocation: Geolocation, public loadingController: LoadingController, public alertController: AlertController) {
 
-  }
 
   async getLoc() {
     const loading = await this.loadingController.create({
-      message: 'Espere por favor...',
+      message: 'Eviando cordenadas...',
     });
     await loading.present();
 
@@ -88,5 +98,13 @@ export class HomePage implements OnInit {
     await alert.present();
   }
 
+
+  Strat_Travel(){
+    this.dataService.startTravel(this.code,this.lat,this.lng);
+  }
+  Finish_Travel(){
+    this.dataService.finishTravel(this.code,this.lat,this.lng);
+    clearInterval(this.interval);
+  }
 
 }
