@@ -79,7 +79,7 @@ export class HomePage implements OnInit {
     }, er => {
       //alert("error getting location")
       loading.dismiss()
-      this.showLoader('Can not retrieve Location')
+      this.showLoader('No podemos acceder a tu ubicación')
     }).catch((error) => {
       //alert('Error getting location'+JSON.stringify(error));
       loading.dismiss()
